@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://masisparmo.github.io/landingpage-lynk.id/sitemap.xml
+Sitemap: https://toko.isparmo.com/sitemap.xml
