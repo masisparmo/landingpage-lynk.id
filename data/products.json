@@ -1,0 +1,197 @@
+{
+  "store": {
+    "name": "Toko Online ISPARMO",
+    "subtitle": "Menyediakan Buku PDF (Ebook), Aplikasi berbasis AI, dan Pelatihan Online. Tersedia affiliate melalui Lynk.id.",
+    "owner": "ISPARMO",
+    "profileHandle": "@kangmasis",
+    "profileUrl": "https://lynk.id/kangmasis",
+    "mainWebsite": "https://www.isparmo.com",
+    "whatsapp": "https://wa.me/628121083060",
+    "email": "mail@isparmo.com",
+    "affiliateNote": "Dapatkan komisi affiliate menarik untuk setiap penjualan produk ISPARMO melalui platform Lynk.id."
+  },
+  "totalProducts": 9,
+  "lastUpdated": "2026-10-07 06:40:19 UTC",
+  "products": [
+    {
+      "id": "x711j36d856x",
+      "title": "Ebook Panduan Sistem Marketing AI UMKM: Dari Foto HP ke Mesin Penjualan",
+      "category": "ebook",
+      "price": "IDR 45,000",
+      "priceNumeric": 45000,
+      "url": "https://lynk.id/kangmasis/x711j36d856x",
+      "image": "https://cdn.lynkid.my.id/products/07-10-2026/1791344982101_3596946.webp",
+      "description": "Panduan taktis implementasi sistem otomatisasi marketing berbasis Artificial Intelligence untuk bisnis UMKM. Ubah foto produk dari HP menjadi mesin penjualan otomatis.",
+      "badge": "Best Seller",
+      "featured": true,
+      "tags": [
+        "AI Marketing",
+        "Ebook PDF",
+        "UMKM",
+        "Penjualan Otomatis"
+      ],
+      "affiliateUrl": "https://lynk.id/kangmasis/x711j36d856x?aff=1",
+      "lastSynced": "2026-10-07T06:40:19.825645+00:00"
+    },
+    {
+      "id": "xq91xyr80x0k",
+      "title": "Pro Foto Studio (aplikasi web)",
+      "category": "app",
+      "price": "IDR 75,000",
+      "priceNumeric": 75000,
+      "url": "https://lynk.id/kangmasis/xq91xyr80x0k",
+      "image": "https://cdn.lynkid.my.id/draft-products/29-12-2025/1767021080523_8004410.webp",
+      "description": "Aplikasi web AI inovatif untuk menghasilkan foto produk berstandar studio profesional dalam hitungan detik tanpa kamera mahal atau studio foto fisik.",
+      "badge": "Aplikasi Populer",
+      "featured": true,
+      "tags": [
+        "Aplikasi Web AI",
+        "Foto Studio",
+        "Katalog Produk",
+        "E-Commerce"
+      ],
+      "affiliateUrl": "https://lynk.id/kangmasis/xq91xyr80x0k?aff=1",
+      "lastSynced": "2026-10-07T06:40:19.826644+00:00"
+    },
+    {
+      "id": "lp5vl38ln7qe",
+      "title": "Ebook Panduan Cepat & Mudah Membuat Website Profesional dengan AI",
+      "category": "ebook",
+      "price": "IDR 35,000",
+      "priceNumeric": 35000,
+      "url": "https://lynk.id/kangmasis/lp5vl38ln7qe",
+      "image": "https://cdn.lynkid.my.id/products/18-09-2026/1789715114650_5587750.webp",
+      "description": "Buku panduan langkah demi langkah cara membuat website profesional dan landing page konversi tinggi dengan bantuan AI tanpa perlu keahlian coding rumit.",
+      "badge": "Ebook Praktis",
+      "featured": false,
+      "tags": [
+        "Website AI",
+        "Ebook PDF",
+        "Landing Page",
+        "No-Code"
+      ],
+      "affiliateUrl": "https://lynk.id/kangmasis/lp5vl38ln7qe?aff=1",
+      "lastSynced": "2026-10-07T06:40:19.826644+00:00"
+    },
+    {
+      "id": "o25erzp0d5p9",
+      "title": "Ebook GURU CYBORG: Buku Panduan Penggunaan AI untuk Guru Sekolah",
+      "category": "ebook",
+      "price": "IDR 55,000",
+      "priceNumeric": 55000,
+      "url": "https://lynk.id/kangmasis/o25erzp0d5p9",
+      "image": "https://cdn.lynkid.my.id/products/24-07-2026/1784885021463_6703547.webp",
+      "description": "Buku panduan revolusioner bagi para guru & pendidik sekolah untuk mengintegrasikan AI ke dalam persiapan materi ajar, modul pembelajaran, dan evaluasi siswa.",
+      "badge": "Rekomendasi Guru",
+      "featured": true,
+      "tags": [
+        "Guru Cyborg",
+        "AI Pendidikan",
+        "Ebook PDF",
+        "Modul Ajar"
+      ],
+      "affiliateUrl": "https://lynk.id/kangmasis/o25erzp0d5p9?aff=1",
+      "lastSynced": "2026-10-07T06:40:19.826644+00:00"
+    },
+    {
+      "id": "6xe7zvl66vo7",
+      "title": "Insinyur Website (aplikasi web)",
+      "category": "app",
+      "price": "IDR 75,000",
+      "priceNumeric": 75000,
+      "url": "https://lynk.id/kangmasis/6xe7zvl66vo7",
+      "image": "https://cdn.lynkid.my.id/draft-products/02-01-2026/1767351879341_7517475.webp",
+      "description": "Aplikasi generator website dan landing page instan berbasis AI. Ciptakan struktur web penjualan profesional yang persuasif dan siap pakai seketika.",
+      "badge": "Aplikasi Web",
+      "featured": false,
+      "tags": [
+        "Aplikasi Web AI",
+        "Insinyur Website",
+        "Automasi",
+        "Generator Web"
+      ],
+      "affiliateUrl": "https://lynk.id/kangmasis/6xe7zvl66vo7?aff=1",
+      "lastSynced": "2026-10-07T06:40:19.826644+00:00"
+    },
+    {
+      "id": "620p64yexwee",
+      "title": "Adobe Stock Assistant - Aplikasi",
+      "category": "app",
+      "price": "IDR 75,000",
+      "priceNumeric": 75000,
+      "url": "https://lynk.id/kangmasis/620p64yexwee",
+      "image": "https://cdn.lynkid.my.id/products/25-12-2025/1766623942369_8913077.webp",
+      "description": "Asisten cerdas berbasis AI untuk microstocker Adobe Stock. Menghasilkan judul, deskripsi, dan keyword SEO berkualitas tinggi yang lolos kurasi dan laris.",
+      "badge": "Tools AI",
+      "featured": false,
+      "tags": [
+        "Adobe Stock",
+        "Aplikasi Web",
+        "Microstock",
+        "Keyword AI"
+      ],
+      "affiliateUrl": "https://lynk.id/kangmasis/620p64yexwee?aff=1",
+      "lastSynced": "2026-10-07T06:40:19.826644+00:00"
+    },
+    {
+      "id": "y6bVlZB",
+      "title": "Video Rekaman dan Materi Pelatihan Penggunaan Ai Untuk Membuat Gambar dan Video",
+      "category": "pelatihan",
+      "price": "IDR 30,000",
+      "priceNumeric": 30000,
+      "url": "https://lynk.id/kangmasis/y6bVlZB",
+      "image": "https://cdn.lynkid.my.id/products/16-03-2025/1742117290317_1389679",
+      "description": "Akses video rekaman pelatihan mendalam dan materi eksklusif tentang cara memproduksi gambar dan video berkualitas tinggi menggunakan berbagai tools AI canggih.",
+      "badge": "Video & Pelatihan",
+      "featured": false,
+      "tags": [
+        "Video Pelatihan",
+        "AI Gambar",
+        "AI Video",
+        "Studi Kasus"
+      ],
+      "affiliateUrl": "https://lynk.id/kangmasis/y6bVlZB?aff=1",
+      "lastSynced": "2026-10-07T06:40:19.826644+00:00"
+    },
+    {
+      "id": "2q4qqvnrgomg",
+      "title": "Ebook Tutorial Lengkap Penggunaan Google Gemini Ai untuk Para Guru",
+      "category": "ebook",
+      "price": "IDR 15,000",
+      "priceNumeric": 15000,
+      "url": "https://lynk.id/kangmasis/2q4qqvnrgomg",
+      "image": "",
+      "description": "Tutorial lengkap dan panduan praktis memaksimalkan Google Gemini AI untuk kebutuhan guru: pembuatan soal, RPP otomatis, rangkuman, dan ide pengajaran kreatif.",
+      "badge": "Ebook Guru",
+      "featured": false,
+      "tags": [
+        "Google Gemini",
+        "Ebook Guru",
+        "Panduan AI",
+        "Edukasi"
+      ],
+      "affiliateUrl": "https://lynk.id/kangmasis/2q4qqvnrgomg?aff=1",
+      "lastSynced": "2026-10-07T06:40:19.826644+00:00"
+    },
+    {
+      "id": "znrnnl0nze1g",
+      "title": "Ebook Panduan ChatGPT Untuk Guru",
+      "category": "ebook",
+      "price": "IDR 15,000",
+      "priceNumeric": 15000,
+      "url": "https://lynk.id/kangmasis/znrnnl0nze1g",
+      "image": "",
+      "description": "Kumpulan prompt siap pakai dan strategi pemanfaatan ChatGPT bagi tenaga pendidik untuk menghemat waktu administrasi serta menciptakan suasana kelas interaktif.",
+      "badge": "Ebook Guru",
+      "featured": false,
+      "tags": [
+        "ChatGPT Guru",
+        "Prompt Library",
+        "Ebook PDF",
+        "Produktivitas Guru"
+      ],
+      "affiliateUrl": "https://lynk.id/kangmasis/znrnnl0nze1g?aff=1",
+      "lastSynced": "2026-10-07T06:40:19.826644+00:00"
+    }
+  ]
+}

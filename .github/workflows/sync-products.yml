@@ -1,0 +1,45 @@
+name: Auto Sync Lynk.id Products
+
+on:
+  schedule:
+    # Berjalan 2x sehari otomatis (jam 02:00 dan 14:00 UTC = 09:00 dan 21:00 WIB)
+    - cron: '0 2,14 * * *'
+  workflow_dispatch:
+    # Memungkinkan trigger manual kapan saja dari GitHub Web / HP setelah upload produk baru
+  push:
+    branches:
+      - main
+    paths:
+      - 'scripts/**'
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Run Lynk.id Scraper & Updater
+        run: |
+          python scripts/sync_products.py
+
+      - name: Commit and Push if Changed
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/products.json
+          if git diff --staged --quiet; then
+            echo "Tidak ada produk baru atau perubahan data di Lynk.id."
+          else
+            echo "Ada update produk! Melakukan commit dan push..."
+            git commit -m "chore(products): otomatis update katalog produk dari lynk.id [skip ci]"
+            git push
+          fi
