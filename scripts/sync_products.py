@@ -204,8 +204,13 @@ def main():
             "owner": "ISPARMO",
             "profileHandle": "@kangmasis",
             "profileUrl": "https://lynk.id/kangmasis",
+            "profileImage": "assets/images/isparmo-profile.jpg",
             "mainWebsite": "https://www.isparmo.com",
             "whatsapp": "https://wa.me/628121083060",
+            "facebook": "https://facebook.com/isparmo.ir",
+            "youtube": "https://youtube.com/c/isparmoseo",
+            "instagram": "https://instagram.com/isparmophotos",
+            "linkedin": "https://linkedin.com/in/ir-isparmo-ipm-489833177",
             "email": "mail@isparmo.com",
             "affiliateNote": "Dapatkan komisi affiliate menarik untuk setiap penjualan produk ISPARMO melalui platform Lynk.id."
         },
