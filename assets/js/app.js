@@ -200,11 +200,13 @@
       html += `
         <article class="product-card" data-id="${item.id}" data-category="${item.category}">
           <div class="card-media-wrapper">
-            <div class="card-badges">${badgesHtml}</div>
             ${mediaHtml}
           </div>
           <div class="card-body">
-            <div class="card-tags">${tagsHtml}</div>
+            <div class="card-meta-row">
+              <div class="card-badges">${badgesHtml}</div>
+              <div class="card-tags">${tagsHtml}</div>
+            </div>
             <h3 class="product-title" title="${escapeHtml(item.title)}">${escapeHtml(item.title)}</h3>
             <p class="product-desc">${escapeHtml(item.description)}</p>
             <div class="card-footer">

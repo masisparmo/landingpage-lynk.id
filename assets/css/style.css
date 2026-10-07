@@ -793,9 +793,12 @@ button, input, select {
 .card-media-wrapper {
   position: relative;
   width: 100%;
-  aspect-ratio: 16/10;
-  background: var(--bg-tertiary);
+  aspect-ratio: 1 / 1;
+  background: var(--bg-secondary);
   overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .product-img {
@@ -806,7 +809,7 @@ button, input, select {
 }
 
 .product-card:hover .product-img {
-  transform: scale(1.05);
+  transform: scale(1.03);
 }
 
 .img-fallback-placeholder {
@@ -822,45 +825,58 @@ button, input, select {
 }
 
 .img-fallback-placeholder i {
-  font-size: 3rem;
+  font-size: 3.5rem;
   opacity: 0.85;
 }
 
 .img-fallback-placeholder span {
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   font-weight: 600;
   color: var(--text-muted);
 }
 
+.card-meta-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
 .card-badges {
-  position: absolute;
-  top: 0.75rem;
-  left: 0.75rem;
   display: flex;
   flex-wrap: wrap;
   gap: 0.4rem;
-  z-index: 2;
 }
 
 .card-badge {
   font-size: 0.72rem;
   font-weight: 700;
-  padding: 0.25rem 0.6rem;
+  padding: 0.25rem 0.65rem;
   border-radius: var(--radius-pill);
   text-transform: uppercase;
   letter-spacing: 0.03em;
+  display: inline-flex;
+  align-items: center;
 }
 
 .card-badge.badge-featured {
   background: var(--brand-orange);
   color: #FFFFFF;
-  box-shadow: 0 2px 8px rgba(255, 107, 0, 0.4);
+  box-shadow: 0 2px 8px rgba(255, 107, 0, 0.35);
 }
 
 .card-badge.badge-category {
-  background: rgba(18, 19, 22, 0.82);
-  color: #FFFFFF;
-  backdrop-filter: blur(4px);
+  background: var(--bg-tertiary);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-light);
+}
+
+[data-theme="dark"] .card-badge.badge-category {
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+  border-color: var(--border-light);
 }
 
 .card-body {
