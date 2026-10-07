@@ -924,7 +924,7 @@ button, input, select {
   display: flex;
   gap: 1rem;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   flex-wrap: wrap;
 }
 
@@ -1796,14 +1796,19 @@ button, input, select {
     font-size: 1.05rem;
   }
   .hero-search-bar {
-    padding: 0.3rem 0.3rem 0.3rem 0.9rem;
+    padding: 0.3rem 0.35rem 0.3rem 0.85rem;
+  }
+  .search-bar-icon {
+    font-size: 1rem;
+    margin-right: 0.4rem;
   }
   .search-bar-input {
-    font-size: 0.92rem;
+    font-size: 0.9rem;
   }
   .search-bar-submit-btn {
     padding: 0.6rem 0.95rem;
     font-size: 0.85rem;
+    flex-shrink: 0;
   }
   .affiliate-banner-box {
     flex-direction: column;
@@ -1825,9 +1830,17 @@ button, input, select {
   .hero-search-bar {
     padding: 0.25rem 0.25rem 0.25rem 0.75rem;
   }
+  .search-bar-icon {
+    font-size: 0.95rem;
+    margin-right: 0.3rem;
+  }
+  .search-bar-input {
+    font-size: 0.85rem;
+  }
   .search-bar-submit-btn {
-    padding: 0.55rem 0.75rem;
+    padding: 0.55rem 0.8rem;
     font-size: 0.82rem;
-    gap: 0.35rem;
+    gap: 0.3rem;
+    flex-shrink: 0;
   }
 }
