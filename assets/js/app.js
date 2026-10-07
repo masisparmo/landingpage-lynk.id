@@ -16,6 +16,10 @@
   const themeToggleBtn = document.getElementById('themeToggleBtn');
   const productsContainer = document.getElementById('productsContainer');
   const searchInput = document.getElementById('searchInput');
+  const navSearchInput = document.getElementById('navSearchInput');
+  const heroSearchInput = document.getElementById('heroSearchInput');
+  const heroSearchBtn = document.getElementById('heroSearchBtn');
+  const quickTagBtns = document.querySelectorAll('.quick-tag-btn');
   const sortSelect = document.getElementById('sortSelect');
   const filterButtons = document.querySelectorAll('.filter-btn');
   const countAll = document.getElementById('countAll');
@@ -265,17 +269,72 @@
       });
     });
 
-    // Search Input with debounce
+    // Synchronized Search Functionality
+    function syncSearch(val, shouldScroll = false) {
+      searchQuery = val || '';
+      if (searchInput && searchInput.value !== searchQuery) searchInput.value = searchQuery;
+      if (navSearchInput && navSearchInput.value !== searchQuery) navSearchInput.value = searchQuery;
+      if (heroSearchInput && heroSearchInput.value !== searchQuery) heroSearchInput.value = searchQuery;
+      
+      renderProducts();
+
+      if (shouldScroll) {
+        const catalogEl = document.getElementById('katalog');
+        if (catalogEl) {
+          catalogEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }
+    }
+
     let searchTimeout = null;
+    function handleDebouncedInput(e, shouldScroll = false) {
+      clearTimeout(searchTimeout);
+      const val = e.target.value;
+      searchTimeout = setTimeout(() => {
+        syncSearch(val, shouldScroll);
+      }, 160);
+    }
+
+    // Catalog Search Input
     if (searchInput) {
-      searchInput.addEventListener('input', e => {
-        clearTimeout(searchTimeout);
-        searchTimeout = setTimeout(() => {
-          searchQuery = e.target.value;
-          renderProducts();
-        }, 180);
+      searchInput.addEventListener('input', e => handleDebouncedInput(e, false));
+    }
+
+    // Navbar Top Search Input
+    if (navSearchInput) {
+      navSearchInput.addEventListener('input', e => handleDebouncedInput(e, false));
+      navSearchInput.addEventListener('keydown', e => {
+        if (e.key === 'Enter') {
+          syncSearch(navSearchInput.value, true);
+        }
       });
     }
+
+    // Hero Section Search Input
+    if (heroSearchInput) {
+      heroSearchInput.addEventListener('input', e => handleDebouncedInput(e, false));
+      heroSearchInput.addEventListener('keydown', e => {
+        if (e.key === 'Enter') {
+          syncSearch(heroSearchInput.value, true);
+        }
+      });
+    }
+
+    // Hero Search Button
+    if (heroSearchBtn) {
+      heroSearchBtn.addEventListener('click', () => {
+        const val = heroSearchInput ? heroSearchInput.value : '';
+        syncSearch(val, true);
+      });
+    }
+
+    // Quick Tag Buttons
+    quickTagBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const query = btn.getAttribute('data-query') || btn.textContent.trim();
+        syncSearch(query, true);
+      });
+    });
 
     // Sort Select
     if (sortSelect) {
