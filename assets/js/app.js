@@ -1,6 +1,7 @@
 /**
  * Toko Online ISPARMO - Core Client Application
- * Handles: Theme Toggle, Dynamic JSON Hydration, Live Filter & Search, Sorting, FAQs, Modal
+ * Handles: Theme Toggle, Dynamic JSON Hydration, Smart Search Engine with Synonyms,
+ * Live Dropdown Preview, Category Filters, Sorting, FAQs, Modal
  */
 
 (function () {
@@ -16,9 +17,10 @@
   const themeToggleBtn = document.getElementById('themeToggleBtn');
   const productsContainer = document.getElementById('productsContainer');
   const searchInput = document.getElementById('searchInput');
-  const navSearchInput = document.getElementById('navSearchInput');
   const heroSearchInput = document.getElementById('heroSearchInput');
   const heroSearchBtn = document.getElementById('heroSearchBtn');
+  const heroSearchClearBtn = document.getElementById('heroSearchClearBtn');
+  const heroSearchDropdown = document.getElementById('heroSearchDropdown');
   const quickTagBtns = document.querySelectorAll('.quick-tag-btn');
   const sortSelect = document.getElementById('sortSelect');
   const filterButtons = document.querySelectorAll('.filter-btn');
@@ -56,7 +58,6 @@
   // ==========================================
   async function loadProducts() {
     try {
-      // Add cache buster for fresh data from GitHub Pages
       const response = await fetch('data/products.json?v=' + Date.now());
       if (!response.ok) {
         throw new Error('Gagal memuat data/products.json: ' + response.status);
@@ -67,7 +68,6 @@
       renderProducts();
     } catch (err) {
       console.warn('Menggunakan fallback data produk:', err);
-      // If products already in DOM fallback, leave them or keep existing
     }
   }
 
@@ -87,8 +87,60 @@
   }
 
   // ==========================================
-  // 3. FILTER, SORT & RENDER PRODUCTS
+  // 3. SMART SEARCH & FILTER ENGINE
   // ==========================================
+  function matchesSearch(item, query) {
+    if (!query || query.trim() === '') return true;
+    const q = query.toLowerCase().trim();
+
+    const title = (item.title || '').toLowerCase();
+    const desc = (item.description || '').toLowerCase();
+    const category = (item.category || '').toLowerCase();
+    const tags = (item.tags || []).join(' ').toLowerCase();
+    const badge = (item.badge || '').toLowerCase();
+    const searchable = `${title} ${desc} ${category} ${tags} ${badge}`;
+
+    // Direct substring check
+    if (searchable.includes(q)) return true;
+
+    // Synonym & token expansion
+    const tokens = q.split(/\s+/).filter(Boolean);
+    return tokens.every(token => {
+      if (searchable.includes(token)) return true;
+
+      // "buku", "ebook", "pdf", "panduan"
+      if (['buku', 'ebook', 'pdf', 'panduan', 'bacaan'].includes(token)) {
+        return category === 'ebook' || searchable.includes('ebook') || searchable.includes('buku') || searchable.includes('panduan');
+      }
+      // "aplikasi", "app", "tool", "tools"
+      if (['aplikasi', 'app', 'apps', 'tool', 'tools', 'software', 'generator'].includes(token)) {
+        return category === 'app' || searchable.includes('aplikasi') || searchable.includes('web app') || searchable.includes('studio') || searchable.includes('insinyur');
+      }
+      // "video", "rekaman", "pelatihan", "kursus"
+      if (['video', 'rekaman', 'pelatihan', 'kursus', 'kelas', 'webinar'].includes(token)) {
+        return category === 'pelatihan' || searchable.includes('pelatihan') || searchable.includes('rekaman') || searchable.includes('video');
+      }
+      // "guru", "sekolah", "pendidikan"
+      if (['guru', 'sekolah', 'pendidikan', 'pengajar', 'murid'].includes(token)) {
+        return searchable.includes('guru') || searchable.includes('cyborg') || searchable.includes('gemini') || searchable.includes('chatgpt');
+      }
+      // "marketing", "jualan", "promosi"
+      if (['marketing', 'jualan', 'penjualan', 'promosi', 'umkm'].includes(token)) {
+        return searchable.includes('marketing') || searchable.includes('umkm') || searchable.includes('penjualan');
+      }
+      // "website", "landing", "web"
+      if (['website', 'landing', 'web', 'site'].includes(token)) {
+        return searchable.includes('website') || searchable.includes('landing') || searchable.includes('insinyur');
+      }
+      // "foto", "gambar", "katalog"
+      if (['foto', 'photo', 'gambar', 'image', 'studio'].includes(token)) {
+        return searchable.includes('foto') || searchable.includes('studio') || searchable.includes('gambar');
+      }
+
+      return false;
+    });
+  }
+
   function getFilteredAndSortedProducts() {
     let list = [...productsData];
 
@@ -99,13 +151,7 @@
 
     // Filter by Search Query
     if (searchQuery.trim() !== '') {
-      const q = searchQuery.toLowerCase().trim();
-      list = list.filter(item => {
-        const titleMatch = item.title && item.title.toLowerCase().includes(q);
-        const descMatch = item.description && item.description.toLowerCase().includes(q);
-        const tagMatch = item.tags && item.tags.some(t => t.toLowerCase().includes(q));
-        return titleMatch || descMatch || tagMatch;
-      });
+      list = list.filter(item => matchesSearch(item, searchQuery));
     }
 
     // Sort
@@ -116,7 +162,6 @@
     } else if (currentSort === 'title') {
       list.sort((a, b) => a.title.localeCompare(b.title));
     } else {
-      // Featured first, then id
       list.sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0));
     }
 
@@ -144,6 +189,132 @@
     return 'fa-solid fa-book-bookmark';
   }
 
+  // ==========================================
+  // 4. LIVE HERO DROPDOWN PREVIEW
+  // ==========================================
+  function updateHeroDropdown(query) {
+    if (!heroSearchDropdown) return;
+
+    const trimmed = (query || '').trim();
+    if (!trimmed) {
+      heroSearchDropdown.classList.remove('open');
+      heroSearchDropdown.innerHTML = '';
+      if (heroSearchClearBtn) heroSearchClearBtn.style.display = 'none';
+      return;
+    }
+
+    if (heroSearchClearBtn) heroSearchClearBtn.style.display = 'flex';
+
+    // Search across ALL products for dropdown preview
+    const matched = productsData.filter(item => matchesSearch(item, trimmed));
+
+    if (matched.length === 0) {
+      heroSearchDropdown.innerHTML = `
+        <div class="dropdown-no-results">
+          <i class="fa-solid fa-magnifying-glass" style="color:var(--text-muted); font-size:1.4rem; margin-bottom:0.4rem; display:block;"></i>
+          Tidak ada produk yang cocok dengan "<strong>${escapeHtml(trimmed)}</strong>".
+        </div>
+      `;
+      heroSearchDropdown.classList.add('open');
+      return;
+    }
+
+    let itemsHtml = `
+      <div class="dropdown-header">
+        <span>Hasil Produk (${matched.length})</span>
+        <span style="font-size:0.75rem; color:var(--brand-orange); cursor:pointer;" id="dropdownScrollAll">Lihat di Katalog &darr;</span>
+      </div>
+    `;
+
+    matched.slice(0, 5).forEach(item => {
+      const catLabel = getCategoryLabel(item.category);
+      const icon = getFallbackIcon(item);
+      const media = (item.image && item.image.trim())
+        ? `<img src="${item.image}" alt="${escapeHtml(item.title)}" class="dropdown-item-img">`
+        : `<div class="dropdown-item-placeholder"><i class="${icon}"></i></div>`;
+
+      itemsHtml += `
+        <div class="dropdown-item" data-id="${item.id}" data-url="${item.url}">
+          ${media}
+          <div class="dropdown-item-info">
+            <h4 class="dropdown-item-title">${escapeHtml(item.title)}</h4>
+            <div class="dropdown-item-meta">
+              <span class="dropdown-item-price">${escapeHtml(item.price)}</span>
+              <span class="dropdown-item-cat">&bull; ${catLabel}</span>
+            </div>
+          </div>
+          <a href="${item.url}" target="_blank" rel="noopener noreferrer" class="dropdown-item-btn" onclick="event.stopPropagation();">
+            Beli
+          </a>
+        </div>
+      `;
+    });
+
+    if (matched.length > 5) {
+      itemsHtml += `
+        <div class="dropdown-footer">
+          <button type="button" class="dropdown-footer-btn" id="dropdownMoreBtn">
+            <span>Lihat semua ${matched.length} produk di katalog</span>
+            <i class="fa-solid fa-arrow-down"></i>
+          </button>
+        </div>
+      `;
+    }
+
+    heroSearchDropdown.innerHTML = itemsHtml;
+    heroSearchDropdown.classList.add('open');
+
+    // Attach click events on dropdown items
+    heroSearchDropdown.querySelectorAll('.dropdown-item').forEach(el => {
+      el.addEventListener('click', () => {
+        const prodId = el.getAttribute('data-id');
+        heroSearchDropdown.classList.remove('open');
+        scrollToProduct(prodId);
+      });
+    });
+
+    const scrollAllBtn = document.getElementById('dropdownScrollAll');
+    if (scrollAllBtn) {
+      scrollAllBtn.addEventListener('click', () => {
+        heroSearchDropdown.classList.remove('open');
+        scrollToCatalog();
+      });
+    }
+
+    const moreBtn = document.getElementById('dropdownMoreBtn');
+    if (moreBtn) {
+      moreBtn.addEventListener('click', () => {
+        heroSearchDropdown.classList.remove('open');
+        scrollToCatalog();
+      });
+    }
+  }
+
+  function scrollToProduct(prodId) {
+    const card = document.querySelector(`.product-card[data-id="${prodId}"]`);
+    if (card) {
+      card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      card.style.borderColor = 'var(--brand-orange)';
+      card.style.boxShadow = '0 0 0 3px var(--brand-orange-glow)';
+      setTimeout(() => {
+        card.style.borderColor = '';
+        card.style.boxShadow = '';
+      }, 2000);
+    } else {
+      scrollToCatalog();
+    }
+  }
+
+  function scrollToCatalog() {
+    const catalogEl = document.getElementById('katalog');
+    if (catalogEl) {
+      catalogEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+
+  // ==========================================
+  // 5. RENDER PRODUCTS GRID
+  // ==========================================
   function renderProducts() {
     if (!productsContainer) return;
 
@@ -161,8 +332,7 @@
       const resetBtn = document.getElementById('resetFilterBtn');
       if (resetBtn) {
         resetBtn.addEventListener('click', () => {
-          searchQuery = '';
-          if (searchInput) searchInput.value = '';
+          syncSearch('', false);
           currentFilter = 'all';
           filterButtons.forEach(b => b.classList.toggle('active', b.dataset.filter === 'all'));
           renderProducts();
@@ -256,10 +426,33 @@
   }
 
   // ==========================================
-  // 4. EVENT LISTENERS
+  // 6. SYNCHRONIZED SEARCH HANDLER
+  // ==========================================
+  function syncSearch(val, shouldScroll = false) {
+    searchQuery = val || '';
+    if (searchInput && searchInput.value !== searchQuery) searchInput.value = searchQuery;
+    if (heroSearchInput && heroSearchInput.value !== searchQuery) heroSearchInput.value = searchQuery;
+
+    // When searching, reset category filter to 'all' so results across all categories show up
+    if (searchQuery.trim() !== '') {
+      currentFilter = 'all';
+      filterButtons.forEach(b => b.classList.toggle('active', b.dataset.filter === 'all'));
+    }
+
+    renderProducts();
+    updateHeroDropdown(searchQuery);
+
+    if (shouldScroll) {
+      if (heroSearchDropdown) heroSearchDropdown.classList.remove('open');
+      scrollToCatalog();
+    }
+  }
+
+  // ==========================================
+  // 7. EVENT LISTENERS
   // ==========================================
   function initListeners() {
-    // Filter Buttons
+    // Category Filter Buttons
     filterButtons.forEach(btn => {
       btn.addEventListener('click', () => {
         filterButtons.forEach(b => b.classList.remove('active'));
@@ -269,58 +462,35 @@
       });
     });
 
-    // Synchronized Search Functionality
-    function syncSearch(val, shouldScroll = false) {
-      searchQuery = val || '';
-      if (searchInput && searchInput.value !== searchQuery) searchInput.value = searchQuery;
-      if (navSearchInput && navSearchInput.value !== searchQuery) navSearchInput.value = searchQuery;
-      if (heroSearchInput && heroSearchInput.value !== searchQuery) heroSearchInput.value = searchQuery;
-      
-      renderProducts();
-
-      if (shouldScroll) {
-        const catalogEl = document.getElementById('katalog');
-        if (catalogEl) {
-          catalogEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-      }
-    }
-
-    let searchTimeout = null;
-    function handleDebouncedInput(e, shouldScroll = false) {
-      clearTimeout(searchTimeout);
-      const val = e.target.value;
-      searchTimeout = setTimeout(() => {
-        syncSearch(val, shouldScroll);
-      }, 160);
-    }
-
-    // Catalog Search Input
-    if (searchInput) {
-      searchInput.addEventListener('input', e => handleDebouncedInput(e, false));
-    }
-
-    // Navbar Top Search Input
-    if (navSearchInput) {
-      navSearchInput.addEventListener('input', e => handleDebouncedInput(e, false));
-      navSearchInput.addEventListener('keydown', e => {
-        if (e.key === 'Enter') {
-          syncSearch(navSearchInput.value, true);
-        }
-      });
-    }
-
-    // Hero Section Search Input
+    // Hero Search Input (with real-time live preview)
     if (heroSearchInput) {
-      heroSearchInput.addEventListener('input', e => handleDebouncedInput(e, false));
+      heroSearchInput.addEventListener('input', e => {
+        syncSearch(e.target.value, false);
+      });
       heroSearchInput.addEventListener('keydown', e => {
         if (e.key === 'Enter') {
           syncSearch(heroSearchInput.value, true);
         }
+        if (e.key === 'Escape') {
+          if (heroSearchDropdown) heroSearchDropdown.classList.remove('open');
+        }
+      });
+      heroSearchInput.addEventListener('focus', () => {
+        if (heroSearchInput.value.trim() !== '') {
+          updateHeroDropdown(heroSearchInput.value);
+        }
       });
     }
 
-    // Hero Search Button
+    // Clear Button in Hero Search
+    if (heroSearchClearBtn) {
+      heroSearchClearBtn.addEventListener('click', () => {
+        syncSearch('', false);
+        if (heroSearchInput) heroSearchInput.focus();
+      });
+    }
+
+    // Hero Search Submit Button
     if (heroSearchBtn) {
       heroSearchBtn.addEventListener('click', () => {
         const val = heroSearchInput ? heroSearchInput.value : '';
@@ -328,12 +498,26 @@
       });
     }
 
-    // Quick Tag Buttons
+    // Catalog Search Input
+    if (searchInput) {
+      searchInput.addEventListener('input', e => {
+        syncSearch(e.target.value, false);
+      });
+    }
+
+    // Quick Tag Buttons in Hero
     quickTagBtns.forEach(btn => {
       btn.addEventListener('click', () => {
         const query = btn.getAttribute('data-query') || btn.textContent.trim();
         syncSearch(query, true);
       });
+    });
+
+    // Close Dropdown on Outside Click
+    document.addEventListener('click', e => {
+      if (heroSearchDropdown && !heroSearchDropdown.contains(e.target) && e.target !== heroSearchInput && e.target !== heroSearchBtn) {
+        heroSearchDropdown.classList.remove('open');
+      }
     });
 
     // Sort Select
