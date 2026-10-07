@@ -1795,6 +1795,16 @@ button, input, select {
   .hero-subtitle {
     font-size: 1.05rem;
   }
+  .hero-search-bar {
+    padding: 0.3rem 0.3rem 0.3rem 0.9rem;
+  }
+  .search-bar-input {
+    font-size: 0.92rem;
+  }
+  .search-bar-submit-btn {
+    padding: 0.6rem 0.95rem;
+    font-size: 0.85rem;
+  }
   .affiliate-banner-box {
     flex-direction: column;
     align-items: flex-start;
@@ -1808,5 +1818,16 @@ button, input, select {
   .floating-actions {
     bottom: 1.25rem;
     right: 1.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-search-bar {
+    padding: 0.25rem 0.25rem 0.25rem 0.75rem;
+  }
+  .search-bar-submit-btn {
+    padding: 0.55rem 0.75rem;
+    font-size: 0.82rem;
+    gap: 0.35rem;
   }
 }
