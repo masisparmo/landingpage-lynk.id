@@ -336,7 +336,7 @@
           <span>Jadi Affiliate</span>
         </button>
 
-        <a href="https://lynk.id/kangmasis" target="_blank" rel="noopener noreferrer" class="btn-primary" style="padding: 0.5rem 1rem; font-size: 0.88rem;">
+        <a href="https://lynk.id/kangmasis" target="_blank" rel="noopener noreferrer" class="btn-primary nav-btn-lynk" style="padding: 0.5rem 1rem; font-size: 0.88rem;">
           <span>Lynk.id</span>
           <i class="fa-solid fa-arrow-up-right-from-square"></i>
         </a>
@@ -368,30 +368,22 @@
             Menyediakan Buku PDF (Ebook), Aplikasi berbasis AI, dan Pelatihan Online. Tersedia affiliate melalui Lynk.id.
           </p>
 
-          <!-- Dedicated Top Search Box in Hero -->
-          <div class="hero-search-wrapper">
-            <div class="hero-search-bar">
-              <i class="fa-solid fa-magnifying-glass search-bar-icon"></i>
-              <input type="text" id="heroSearchInput" class="search-bar-input" placeholder="Cari buku, ebook, aplikasi AI, modul guru, website..." aria-label="Cari produk di Toko Online ISPARMO" autocomplete="off">
-              <button type="button" id="heroSearchClearBtn" class="search-clear-btn" style="display:none;" aria-label="Hapus kata kunci">
-                <i class="fa-solid fa-xmark"></i>
+          <!-- Quick Category Exploration Pills (Menggantikan form search ganda di Hero) -->
+          <div class="hero-quick-tags">
+            <span class="quick-tags-label"><i class="fa-solid fa-layer-group"></i> Kategori Cepat:</span>
+            <div class="quick-tags-list">
+              <button type="button" class="hero-tag-pill active" data-category="all">
+                <i class="fa-solid fa-border-all"></i> Semua Produk
               </button>
-              <button type="button" class="search-bar-submit-btn" id="heroSearchBtn">
-                <i class="fa-solid fa-magnifying-glass"></i>
-                <span>Cari Produk</span>
+              <button type="button" class="hero-tag-pill" data-category="app">
+                <i class="fa-solid fa-laptop-code"></i> Aplikasi AI
               </button>
-            </div>
-
-            <!-- Live Dropdown Results Preview -->
-            <div id="heroSearchDropdown" class="search-dropdown" role="region" aria-label="Hasil Pencarian Langsung"></div>
-
-            <div class="hero-search-tags">
-              <span class="tags-label"><i class="fa-solid fa-fire"></i> Kategori Cepat:</span>
-              <button type="button" class="quick-tag-btn" data-query="buku">📚 Semua Buku / Ebook</button>
-              <button type="button" class="quick-tag-btn" data-query="aplikasi">💻 Aplikasi AI</button>
-              <button type="button" class="quick-tag-btn" data-query="guru">🎓 Guru &amp; Edukasi</button>
-              <button type="button" class="quick-tag-btn" data-query="marketing">📈 Marketing AI</button>
-              <button type="button" class="quick-tag-btn" data-query="pelatihan">🎥 Video Pelatihan</button>
+              <button type="button" class="hero-tag-pill" data-category="ebook">
+                <i class="fa-solid fa-book-open"></i> Ebook PDF
+              </button>
+              <button type="button" class="hero-tag-pill" data-category="pelatihan">
+                <i class="fa-solid fa-video"></i> Video Pelatihan
+              </button>
             </div>
           </div>
 
@@ -475,16 +467,19 @@
           <p class="section-desc">Pilih produk sesuai kebutuhan Anda: pelajari strategi terbaru lewat Ebook PDF, gunakan Aplikasi AI siap pakai, atau ikuti pelatihan video terstruktur.</p>
         </header>
 
-        <!-- Catalog Controls (Search, Category Filter Tabs & Sorting) -->
+        <!-- Catalog Controls (Single Unified Search, Category Tabs & Sorting) -->
         <div class="catalog-controls">
           <div class="search-and-sort">
             <div class="search-input-wrapper">
               <i class="fa-solid fa-magnifying-glass search-icon"></i>
-              <input type="text" id="searchInput" class="search-input" placeholder="Cari produk (misal: Guru, Marketing, Website, Foto)..." aria-label="Cari nama produk atau kata kunci">
+              <input type="text" id="searchInput" class="search-input" placeholder="Cari buku, ebook, aplikasi AI, modul guru, pelatihan..." aria-label="Cari nama produk atau kata kunci">
+              <button type="button" id="searchClearBtn" class="search-clear-btn" style="display:none;" aria-label="Hapus kata kunci pencarian" title="Hapus">
+                <i class="fa-solid fa-xmark"></i>
+              </button>
             </div>
 
             <div class="sort-wrapper">
-              <label for="sortSelect" class="sort-label">Urutkan:</label>
+              <label for="sortSelect" class="sort-label"><i class="fa-solid fa-arrow-down-short-wide"></i> Urutkan:</label>
               <select id="sortSelect" class="sort-select" aria-label="Urutkan produk">
                 <option value="featured">Paling Populer</option>
                 <option value="price-low">Harga: Terendah</option>
@@ -516,6 +511,9 @@
               <span class="filter-count" id="countCourses">1</span>
             </button>
           </div>
+
+          <!-- Live Result Counter / Search Status -->
+          <div id="searchResultStatus" class="search-result-status" style="display:none;"></div>
         </div>
 
         <!-- Products Grid Container (Hydrated dynamically by app.js, with fallback for SEO) -->

@@ -17,11 +17,9 @@
   const themeToggleBtn = document.getElementById('themeToggleBtn');
   const productsContainer = document.getElementById('productsContainer');
   const searchInput = document.getElementById('searchInput');
-  const heroSearchInput = document.getElementById('heroSearchInput');
-  const heroSearchBtn = document.getElementById('heroSearchBtn');
-  const heroSearchClearBtn = document.getElementById('heroSearchClearBtn');
-  const heroSearchDropdown = document.getElementById('heroSearchDropdown');
-  const quickTagBtns = document.querySelectorAll('.quick-tag-btn');
+  const searchClearBtn = document.getElementById('searchClearBtn');
+  const searchResultStatus = document.getElementById('searchResultStatus');
+  const heroTagPills = document.querySelectorAll('.hero-tag-pill');
   const sortSelect = document.getElementById('sortSelect');
   const filterButtons = document.querySelectorAll('.filter-btn');
   const countAll = document.getElementById('countAll');
@@ -190,103 +188,12 @@
   }
 
   // ==========================================
-  // 4. LIVE HERO DROPDOWN PREVIEW
+  // 4. NAVIGATION & SCROLL HELPERS
   // ==========================================
-  function updateHeroDropdown(query) {
-    if (!heroSearchDropdown) return;
-
-    const trimmed = (query || '').trim();
-    if (!trimmed) {
-      heroSearchDropdown.classList.remove('open');
-      heroSearchDropdown.innerHTML = '';
-      if (heroSearchClearBtn) heroSearchClearBtn.style.display = 'none';
-      return;
-    }
-
-    if (heroSearchClearBtn) heroSearchClearBtn.style.display = 'flex';
-
-    // Search across ALL products for dropdown preview
-    const matched = productsData.filter(item => matchesSearch(item, trimmed));
-
-    if (matched.length === 0) {
-      heroSearchDropdown.innerHTML = `
-        <div class="dropdown-no-results">
-          <i class="fa-solid fa-magnifying-glass" style="color:var(--text-muted); font-size:1.4rem; margin-bottom:0.4rem; display:block;"></i>
-          Tidak ada produk yang cocok dengan "<strong>${escapeHtml(trimmed)}</strong>".
-        </div>
-      `;
-      heroSearchDropdown.classList.add('open');
-      return;
-    }
-
-    let itemsHtml = `
-      <div class="dropdown-header">
-        <span>Hasil Produk (${matched.length})</span>
-        <span style="font-size:0.75rem; color:var(--brand-orange); cursor:pointer;" id="dropdownScrollAll">Lihat di Katalog &darr;</span>
-      </div>
-    `;
-
-    matched.slice(0, 5).forEach(item => {
-      const catLabel = getCategoryLabel(item.category);
-      const icon = getFallbackIcon(item);
-      const media = (item.image && item.image.trim())
-        ? `<img src="${item.image}" alt="${escapeHtml(item.title)}" class="dropdown-item-img">`
-        : `<div class="dropdown-item-placeholder"><i class="${icon}"></i></div>`;
-
-      itemsHtml += `
-        <div class="dropdown-item" data-id="${item.id}" data-url="${item.url}">
-          ${media}
-          <div class="dropdown-item-info">
-            <h4 class="dropdown-item-title">${escapeHtml(item.title)}</h4>
-            <div class="dropdown-item-meta">
-              <span class="dropdown-item-price">${escapeHtml(item.price)}</span>
-              <span class="dropdown-item-cat">&bull; ${catLabel}</span>
-            </div>
-          </div>
-          <a href="${item.url}" target="_blank" rel="noopener noreferrer" class="dropdown-item-btn" onclick="event.stopPropagation();">
-            Beli
-          </a>
-        </div>
-      `;
-    });
-
-    if (matched.length > 5) {
-      itemsHtml += `
-        <div class="dropdown-footer">
-          <button type="button" class="dropdown-footer-btn" id="dropdownMoreBtn">
-            <span>Lihat semua ${matched.length} produk di katalog</span>
-            <i class="fa-solid fa-arrow-down"></i>
-          </button>
-        </div>
-      `;
-    }
-
-    heroSearchDropdown.innerHTML = itemsHtml;
-    heroSearchDropdown.classList.add('open');
-
-    // Attach click events on dropdown items
-    heroSearchDropdown.querySelectorAll('.dropdown-item').forEach(el => {
-      el.addEventListener('click', () => {
-        const prodId = el.getAttribute('data-id');
-        heroSearchDropdown.classList.remove('open');
-        scrollToProduct(prodId);
-      });
-    });
-
-    const scrollAllBtn = document.getElementById('dropdownScrollAll');
-    if (scrollAllBtn) {
-      scrollAllBtn.addEventListener('click', () => {
-        heroSearchDropdown.classList.remove('open');
-        scrollToCatalog();
-      });
-    }
-
-    const moreBtn = document.getElementById('dropdownMoreBtn');
-    if (moreBtn) {
-      moreBtn.addEventListener('click', () => {
-        heroSearchDropdown.classList.remove('open');
-        scrollToCatalog();
-      });
+  function scrollToCatalog() {
+    const catalogEl = document.getElementById('katalog');
+    if (catalogEl) {
+      catalogEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   }
 
@@ -305,13 +212,6 @@
     }
   }
 
-  function scrollToCatalog() {
-    const catalogEl = document.getElementById('katalog');
-    if (catalogEl) {
-      catalogEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  }
-
   // ==========================================
   // 5. RENDER PRODUCTS GRID
   // ==========================================
@@ -319,6 +219,7 @@
     if (!productsContainer) return;
 
     const list = getFilteredAndSortedProducts();
+    updateSearchResultStatus(list.length);
 
     if (list.length === 0) {
       productsContainer.innerHTML = `
@@ -326,16 +227,13 @@
           <i class="fa-solid fa-magnifying-glass"></i>
           <h3>Produk Tidak Ditemukan</h3>
           <p>Tidak ada produk yang cocok dengan pencarian "<strong>${escapeHtml(searchQuery)}</strong>". Silakan coba kata kunci lain atau reset filter.</p>
-          <button id="resetFilterBtn" class="btn-primary" style="margin: 0 auto;">Reset Filter</button>
+          <button id="resetFilterBtn" class="btn-primary" style="margin: 0 auto;">Reset Filter &amp; Pencarian</button>
         </div>
       `;
       const resetBtn = document.getElementById('resetFilterBtn');
       if (resetBtn) {
         resetBtn.addEventListener('click', () => {
-          syncSearch('', false);
-          currentFilter = 'all';
-          filterButtons.forEach(b => b.classList.toggle('active', b.dataset.filter === 'all'));
-          renderProducts();
+          resetAllFilters();
         });
       }
       return;
@@ -426,99 +324,144 @@
   }
 
   // ==========================================
-  // 6. SYNCHRONIZED SEARCH HANDLER
+  // 6. SINGLE UNIFIED SEARCH & FILTER HANDLER
   // ==========================================
-  function syncSearch(val, shouldScroll = false) {
-    searchQuery = val || '';
-    if (searchInput && searchInput.value !== searchQuery) searchInput.value = searchQuery;
-    if (heroSearchInput && heroSearchInput.value !== searchQuery) heroSearchInput.value = searchQuery;
+  function updateSearchResultStatus(count) {
+    if (!searchResultStatus) return;
+    const trimmed = searchQuery.trim();
+    if (!trimmed) {
+      searchResultStatus.style.display = 'none';
+      searchResultStatus.innerHTML = '';
+      return;
+    }
 
-    // When searching, reset category filter to 'all' so results across all categories show up
-    if (searchQuery.trim() !== '') {
+    searchResultStatus.style.display = 'flex';
+    searchResultStatus.innerHTML = `
+      <div class="status-content">
+        <i class="fa-solid fa-circle-info"></i>
+        <span>Menemukan <strong>${count}</strong> produk untuk kata kunci "<strong>${escapeHtml(trimmed)}</strong>"</span>
+      </div>
+      <button type="button" class="catalog-reset-link" id="statusResetSearchBtn" title="Hapus pencarian">
+        <i class="fa-solid fa-xmark"></i> Hapus Filter
+      </button>
+    `;
+
+    const statusResetBtn = document.getElementById('statusResetSearchBtn');
+    if (statusResetBtn) {
+      statusResetBtn.addEventListener('click', () => {
+        handleSearch('');
+        if (searchInput) searchInput.focus();
+      });
+    }
+  }
+
+  function handleSearch(val, shouldScroll = false) {
+    searchQuery = (val || '').trim();
+    if (searchInput && searchInput.value !== val) {
+      searchInput.value = val;
+    }
+
+    if (searchClearBtn) {
+      searchClearBtn.style.display = searchQuery ? 'flex' : 'none';
+    }
+
+    // Jika sedang mencari kata kunci, reset kategori tab ke 'all' agar hasil dari seluruh kategori keluar
+    if (searchQuery !== '') {
       currentFilter = 'all';
-      filterButtons.forEach(b => b.classList.toggle('active', b.dataset.filter === 'all'));
+      filterButtons.forEach(b => {
+        const isAll = (b.dataset.filter === 'all');
+        b.classList.toggle('active', isAll);
+        b.setAttribute('aria-selected', isAll ? 'true' : 'false');
+      });
+      heroTagPills.forEach(p => {
+        p.classList.toggle('active', p.dataset.category === 'all');
+      });
     }
 
     renderProducts();
-    updateHeroDropdown(searchQuery);
 
     if (shouldScroll) {
-      if (heroSearchDropdown) heroSearchDropdown.classList.remove('open');
       scrollToCatalog();
     }
+  }
+
+  function setCategory(cat, shouldScroll = false) {
+    currentFilter = cat || 'all';
+
+    // Update catalog tab buttons
+    filterButtons.forEach(btn => {
+      const isMatch = (btn.dataset.filter === currentFilter);
+      btn.classList.toggle('active', isMatch);
+      btn.setAttribute('aria-selected', isMatch ? 'true' : 'false');
+    });
+
+    // Update hero quick tag pills
+    heroTagPills.forEach(pill => {
+      pill.classList.toggle('active', pill.dataset.category === currentFilter);
+    });
+
+    renderProducts();
+
+    if (shouldScroll) {
+      scrollToCatalog();
+    }
+  }
+
+  function resetAllFilters() {
+    searchQuery = '';
+    if (searchInput) searchInput.value = '';
+    if (searchClearBtn) searchClearBtn.style.display = 'none';
+    setCategory('all', false);
   }
 
   // ==========================================
   // 7. EVENT LISTENERS
   // ==========================================
   function initListeners() {
-    // Category Filter Buttons
+    // Category Filter Buttons in Catalog
     filterButtons.forEach(btn => {
       btn.addEventListener('click', () => {
-        filterButtons.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        currentFilter = btn.dataset.filter || 'all';
-        renderProducts();
+        const cat = btn.dataset.filter || 'all';
+        setCategory(cat, false);
       });
     });
 
-    // Hero Search Input (with real-time live preview)
-    if (heroSearchInput) {
-      heroSearchInput.addEventListener('input', e => {
-        syncSearch(e.target.value, false);
-      });
-      heroSearchInput.addEventListener('keydown', e => {
-        if (e.key === 'Enter') {
-          syncSearch(heroSearchInput.value, true);
+    // Quick Category Exploration Pills in Hero
+    heroTagPills.forEach(pill => {
+      pill.addEventListener('click', () => {
+        const cat = pill.dataset.category || 'all';
+        if (searchQuery) {
+          searchQuery = '';
+          if (searchInput) searchInput.value = '';
+          if (searchClearBtn) searchClearBtn.style.display = 'none';
         }
-        if (e.key === 'Escape') {
-          if (heroSearchDropdown) heroSearchDropdown.classList.remove('open');
-        }
+        setCategory(cat, true);
       });
-      heroSearchInput.addEventListener('focus', () => {
-        if (heroSearchInput.value.trim() !== '') {
-          updateHeroDropdown(heroSearchInput.value);
-        }
-      });
-    }
-
-    // Clear Button in Hero Search
-    if (heroSearchClearBtn) {
-      heroSearchClearBtn.addEventListener('click', () => {
-        syncSearch('', false);
-        if (heroSearchInput) heroSearchInput.focus();
-      });
-    }
-
-    // Hero Search Submit Button
-    if (heroSearchBtn) {
-      heroSearchBtn.addEventListener('click', () => {
-        const val = heroSearchInput ? heroSearchInput.value : '';
-        syncSearch(val, true);
-      });
-    }
+    });
 
     // Catalog Search Input
     if (searchInput) {
       searchInput.addEventListener('input', e => {
-        syncSearch(e.target.value, false);
+        handleSearch(e.target.value, false);
+      });
+
+      searchInput.addEventListener('keydown', e => {
+        if (e.key === 'Enter') {
+          handleSearch(searchInput.value, true);
+        }
+        if (e.key === 'Escape') {
+          handleSearch('', false);
+        }
       });
     }
 
-    // Quick Tag Buttons in Hero
-    quickTagBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-        const query = btn.getAttribute('data-query') || btn.textContent.trim();
-        syncSearch(query, true);
+    // Clear Button in Catalog Search
+    if (searchClearBtn) {
+      searchClearBtn.addEventListener('click', () => {
+        handleSearch('', false);
+        if (searchInput) searchInput.focus();
       });
-    });
-
-    // Close Dropdown on Outside Click
-    document.addEventListener('click', e => {
-      if (heroSearchDropdown && !heroSearchDropdown.contains(e.target) && e.target !== heroSearchInput && e.target !== heroSearchBtn) {
-        heroSearchDropdown.classList.remove('open');
-      }
-    });
+    }
 
     // Sort Select
     if (sortSelect) {
